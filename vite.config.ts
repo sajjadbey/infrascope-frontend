@@ -15,4 +15,17 @@ export default defineConfig({
       'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 800,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-ui': ['lucide-react'],
+          'vendor-graph': ['cytoscape', 'react-cytoscapejs'],
+          'vendor-map': ['leaflet', 'react-leaflet'],
+        },
+      },
+    },
+  },
 })
