@@ -43,6 +43,8 @@ interface ASNSummary {
   error?: boolean;
 }
 
+type CytoscapeStyle = Record<string, string | number | number[] | undefined>;
+
 const PATH_COLORS = [
   '#f97316', '#38bdf8', '#a78bfa', '#facc15', '#f472b6',
   '#2dd4bf', '#fb923c', '#818cf8', '#4ade80', '#e879f9',
@@ -401,7 +403,7 @@ const Topology: React.FC = () => {
       if (containerRef.current) {
         cyRef.current = cytoscape({
           container: containerRef.current,
-          elements,
+          elements: elements as cytoscape.ElementDefinition[],
           style: [
             {
               selector: 'node',
@@ -411,18 +413,18 @@ const Topology: React.FC = () => {
                 'text-wrap': 'wrap', 'text-valign': 'bottom', 'text-margin-y': 4,
                 'border-width': 2, 'text-outline-color': '#f8fafc', 'text-outline-width': 2,
                 'background-color': '#cbd5e1', 'border-color': '#94a3b8'
-              } as any
+              } as CytoscapeStyle
             },
             { selector: 'node[role="tier1"]', style: { 'background-color': '#ef4444', 'border-color': '#991b1b', 'font-size': 10 } },
             { selector: 'node[role="transit"]', style: { 'background-color': '#3b82f6', 'border-color': '#1d4ed8' } },
             { selector: 'node[role="origin"]', style: { 'background-color': '#22c55e', 'border-color': '#166534' } },
             { selector: 'node[role="standalone"]', style: { 'background-color': '#eab308', 'border-color': '#a16207' } },
             { selector: 'edge', style: { 'width': 1.5, 'line-color': '#cbd5e1', 'target-arrow-color': '#cbd5e1', 'target-arrow-shape': 'triangle', 'curve-style': 'bezier', 'arrow-scale': 0.7, 'opacity': 0.4, 'line-style': 'dashed', 'line-dash-pattern': [6, 4] } },
-            { selector: 'node.highlighted', style: { 'background-color': '#f97316', 'border-color': '#c2410c', 'border-width': 4, 'z-index': 9999, 'opacity': 1 } as any },
-            { selector: 'node.highlight-origin', style: { 'background-color': '#22c55e', 'border-color': '#15803d', 'border-width': 4, 'width': 36, 'height': 36, 'z-index': 10000, 'opacity': 1 } as any },
-            { selector: 'node.highlight-dest', style: { 'background-color': '#8b5cf6', 'border-color': '#6d28d9', 'border-width': 4, 'width': 36, 'height': 36, 'z-index': 10000, 'opacity': 1 } as any },
-            { selector: 'node.highlight-tier1', style: { 'background-color': '#ef4444', 'border-color': '#991b1b', 'border-width': 4, 'z-index': 10000, 'opacity': 1 } as any },
-            { selector: 'edge.highlighted', style: { 'line-color': '#f97316', 'target-arrow-color': '#f97316', 'width': 3, 'opacity': 1, 'z-index': 9999 } as any },
+            { selector: 'node.highlighted', style: { 'background-color': '#f97316', 'border-color': '#c2410c', 'border-width': 4, 'z-index': 9999, 'opacity': 1 } as CytoscapeStyle },
+            { selector: 'node.highlight-origin', style: { 'background-color': '#22c55e', 'border-color': '#15803d', 'border-width': 4, 'width': 36, 'height': 36, 'z-index': 10000, 'opacity': 1 } as CytoscapeStyle },
+            { selector: 'node.highlight-dest', style: { 'background-color': '#8b5cf6', 'border-color': '#6d28d9', 'border-width': 4, 'width': 36, 'height': 36, 'z-index': 10000, 'opacity': 1 } as CytoscapeStyle },
+            { selector: 'node.highlight-tier1', style: { 'background-color': '#ef4444', 'border-color': '#991b1b', 'border-width': 4, 'z-index': 10000, 'opacity': 1 } as CytoscapeStyle },
+            { selector: 'edge.highlighted', style: { 'line-color': '#f97316', 'target-arrow-color': '#f97316', 'width': 3, 'opacity': 1, 'z-index': 9999 } as CytoscapeStyle },
             { selector: 'node.dimmed', style: { 'opacity': 0.1 } }, { selector: 'edge.dimmed', style: { 'opacity': 0.05 } }
           ],
           layout: { name: 'cose', nodeOverlap: 40, idealEdgeLength: () => 140, nodeRepulsion: () => 900000, numIter: 300, gravity: 50, randomize: true },

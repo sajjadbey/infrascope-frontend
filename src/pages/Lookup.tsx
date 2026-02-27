@@ -31,7 +31,7 @@ const Lookup: React.FC = () => {
       setResult(res.data);
     } catch (err: unknown) {
       if (err && typeof err === 'object' && 'response' in err) {
-          const resp = (err as any).response;
+          const resp = (err as { response: { data: { error?: string } } }).response;
           setError(resp?.data?.error || 'No matching prefix found');
       } else {
           setError('An unexpected error occurred');
@@ -69,7 +69,7 @@ const Lookup: React.FC = () => {
         <form className="max-w-2xl mx-auto flex flex-col sm:flex-row gap-3 pt-6" onSubmit={handleSubmit}>
           <div className="relative flex-1">
             <input
-              className="w-full pl-4 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-sky-500 focus:ring-0 transition-all font-mono text-slate-700 placeholder:text-slate-400 outline-none"
+              className="w-full pl-4 pr-12 py-4 bg-white border-2 border-slate-200 rounded-2xl focus:border-sky-500 focus:ring-0 transition-all font-mono text-slate-700 placeholder:text-slate-400 outline-none"
               type="text"
               placeholder="e.g. 46.167.128.1 or example.ir"
               value={inputValue}
@@ -77,6 +77,20 @@ const Lookup: React.FC = () => {
               autoFocus
               autoComplete="off"
             />
+            <button
+               type="button"
+               onClick={() => {
+                 setLoading(true);
+                 lookupIP('').then(res => {
+                    setInputValue(res.data.ip);
+                    setSearchParams({ ip: res.data.ip });
+                 }).finally(() => setLoading(false));
+               }}
+               title="Use my IP"
+               className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-sky-500 hover:bg-sky-50 rounded-xl transition-all"
+            >
+               <Globe size={20} />
+            </button>
           </div>
           <button 
             className="px-8 py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" 
