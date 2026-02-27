@@ -28,14 +28,14 @@ const MapPage: React.FC = () => {
   const datacenterIcon = L.divIcon({
     className: 'datacenter-icon',
     html: `
-        <div class="relative w-10 h-10 group">
-            <div class="absolute inset-0 bg-sky-500 rounded-full rounded-bl-none rotate-45 border-2 border-white shadow-lg shadow-sky-500/40 group-hover:scale-110 group-hover:bg-sky-600 transition-all"></div>
-            <div class="absolute inset-0 flex items-center justify-center">
-                <svg viewBox="0 0 24 24" class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
-                    <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
-                    <line x1="6" y1="6" x2="6.01" y2="6"></line>
-                    <line x1="6" y1="18" x2="6.01" y2="18"></line>
+        <div class="relative w-10 h-10 group marker-pulse">
+            <div class="absolute inset-0 bg-sky-500 rounded-full rounded-bl-none rotate-45 border-2 border-white shadow-xl shadow-sky-500/40 group-hover:scale-110 group-hover:bg-sky-600 transition-all duration-300"></div>
+            <div class="absolute inset-0 flex items-center justify-center rotate-0">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 relative z-10">
+                    <rect width="20" height="8" x="2" y="2" rx="2" ry="2"/>
+                    <rect width="20" height="8" x="2" y="14" rx="2" ry="2"/>
+                    <line x1="6" x2="6.01" y1="6" y2="6"/>
+                    <line x1="6" x2="6.01" y1="18" y2="18"/>
                 </svg>
             </div>
         </div>
@@ -117,6 +117,21 @@ const MapPage: React.FC = () => {
       
       {/* Custom Styles for Leaflet */}
       <style>{`
+        .marker-pulse::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50% 50% 50% 0;
+            background: #0ea5e9;
+            opacity: 0.4;
+            transform: rotate(45deg);
+            animation: pulse-pin 2s infinite;
+            z-index: -1;
+        }
+        @keyframes pulse-pin {
+            0% { transform: rotate(45deg) scale(1); opacity: 0.4; }
+            100% { transform: rotate(45deg) scale(2.4); opacity: 0; }
+        }
         .leaflet-popup-content-wrapper {
             border-radius: 2rem !important;
             padding: 0 !important;
