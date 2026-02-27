@@ -400,6 +400,8 @@ const Topology: React.FC = () => {
         elements.push({ data: { id: edgeId, source: src, target: tgt } });
       });
 
+      const loadFallback = setTimeout(() => setLoading(false), 10000);
+
       if (containerRef.current) {
         cyRef.current = cytoscape({
           container: containerRef.current,
@@ -435,25 +437,27 @@ const Topology: React.FC = () => {
             numIter: 300, 
             gravity: 50, 
             randomize: true,
-            animate: false // Disable initial animation to prevent "glitchy" start
+            animate: false 
           },
-          // Performance settings
           textureOnViewport: true,
           hideEdgesOnViewport: true,
           motionBlur: true,
           motionBlurOpacity: 0.2,
-          wheelSensitivity: 0.8, // Faster, more responsive zooming
+          wheelSensitivity: 0.8,
           pixelRatio: 'auto'
         });
 
-        // Only hide loader when layout is fully finished and stable
         cyRef.current.one('layoutstop', () => {
           setLoading(false);
+          clearTimeout(loadFallback);
         });
 
         cyRef.current.on('tap', 'node', (evt) => handleNodeClick(evt.target.data('asn_number')));
       }
-    }).catch(console.error);
+    }).catch(err => {
+      console.error(err);
+      setLoading(false);
+    });
 
     return () => { if (cyRef.current) cyRef.current.destroy(); };
   }, []);
