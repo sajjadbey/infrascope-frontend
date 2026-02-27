@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getStats } from '../api';
 import { Network, Share2, Database, Globe, MapPin, ArrowRight } from 'lucide-react';
-
+import { iran_flag } from '../assets/iran_flag_twemoji.png'
 const Home: React.FC = () => {
   const [stats, setStats] = useState<{
     total_asns: number;
@@ -124,7 +124,7 @@ const Home: React.FC = () => {
           <div className="relative flex flex-col md:flex-row items-center gap-12">
             <div className="shrink-0 select-none">
               <img 
-                src="https://em-content.zobj.net/source/twitter/71/flag-for-iran_1f1ee-1f1f7.png" 
+                src={iran_flag} 
                 alt="Iran Flag" 
                 className="w-20 h-20 md:w-32 md:h-32 object-contain"
               />
