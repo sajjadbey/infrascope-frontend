@@ -8,6 +8,12 @@ const Header: React.FC = () => {
   const { t, i18n } = useTranslation();
   const location = useLocation();
 
+  React.useEffect(() => {
+    const dir = i18n.language === 'fa' ? 'rtl' : 'ltr';
+    document.documentElement.dir = dir;
+    document.documentElement.lang = i18n.language;
+  }, [i18n.language]);
+
   const navItems = [
     { name: t('nav.home'), path: '/', icon: <Home size={18} /> },
     { name: t('nav.topology'), path: '/topology', icon: <LayoutGrid size={18} /> },

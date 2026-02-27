@@ -190,8 +190,8 @@ const resources = {
         no_tier1: "هیچ مسیری به Tier-1 برای این AS یافت نشد."
       },
       map: {
-        asn_network: "شبکه AS",
-        asn_intel: "جزئیات تحلیل AS"
+        asn_network: "شبکه ASN",
+        asn_intel: "جزئیات ASN"
       }
     }
   }

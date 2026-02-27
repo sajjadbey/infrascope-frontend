@@ -74,7 +74,7 @@ const MapPage: React.FC = () => {
                 <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
                     <h3 className="font-bold text-slate-900 flex items-center gap-2">
                         <MapPin size={16} className="text-sky-500" /> 
-                         {i18n.language === 'fa' ? (feature.properties.name_fa || feature.properties.name) : feature.properties.name}
+                         {feature.properties.name}
                     </h3>
                 </div>
                 
@@ -82,7 +82,7 @@ const MapPage: React.FC = () => {
                   {feature.properties.nodes.map((node, nIdx: number) => (
                     <div key={nIdx} className="group p-3 bg-slate-50 rounded-2xl hover:bg-sky-50 transition-colors border border-transparent hover:border-sky-100">
                       <div className="text-sm font-black text-slate-800 mb-2">
-                        {i18n.language === 'fa' ? (node.name_fa || node.name) : node.name}
+                        {node.name}
                       </div>
                       <div className="flex flex-wrap gap-1 mb-2">
                         {node.node_types?.map((nt) => (
@@ -93,7 +93,7 @@ const MapPage: React.FC = () => {
                       </div>
                       <div className="flex flex-col gap-1">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">{t('map.asn_network')}</span>
-                        <div className="text-[11px] font-bold text-slate-600">AS{node.asn_number} <span className="font-medium text-slate-400">— {i18n.language === 'fa' ? (node.asn_name_fa || node.asn_name) : node.asn_name}</span></div>
+                        <div className="text-[11px] font-bold text-slate-600">AS{node.asn_number} <span className="font-medium text-slate-400">— {node.asn_name}</span></div>
                       </div>
                       <Link 
                         to={`/asn/${node.asn_number}`} 
