@@ -10,9 +10,7 @@ import { useTranslation } from 'react-i18next';
 interface MapNode {
   name: string;
   name_fa?: string;
-  asn_number: number;
-  asn_name: string;
-  asn_name_fa?: string;
+  asns: Array<{ number: number; name: string; name_fa?: string }>;
   node_types: Array<{ id: number; name: string; name_fa?: string; color: string }>;
 }
 
@@ -91,16 +89,24 @@ const MapPage: React.FC = () => {
                           </span>
                         ))}
                       </div>
-                      <div className="flex flex-col gap-1">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">{t('map.asn_network')}</span>
-                        <div className="text-[11px] font-bold text-slate-600">AS{node.asn_number} <span className="font-medium text-slate-400">— {i18n.language === 'fa' ? (node.asn_name_fa || node.asn_name) : node.asn_name}</span></div>
+                      <div className="flex flex-col gap-2">
+                        {node.asns?.map((asn, aIdx) => (
+                          <div key={aIdx} className="border-t border-slate-100 first:border-0 pt-2 first:pt-0">
+                            <div className="flex flex-col gap-1">
+                              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">{t('map.asn_network')}</span>
+                              <div className="text-[11px] font-bold text-slate-600">
+                                AS{asn.number} <span className="font-medium text-slate-400">— {i18n.language === 'fa' ? (asn.name_fa || asn.name) : asn.name}</span>
+                              </div>
+                            </div>
+                            <Link 
+                              to={`/asn/${asn.number}`} 
+                              className="mt-1 flex items-center gap-1.5 text-sky-500 text-[11px] font-bold hover:gap-2 transition-all no-underline"
+                            >
+                              {t('map.asn_intel')} <ExternalLink size={12} className={i18n.language === 'fa' ? 'rotate-180' : ''} />
+                            </Link>
+                          </div>
+                        ))}
                       </div>
-                      <Link 
-                        to={`/asn/${node.asn_number}`} 
-                        className="mt-3 flex items-center gap-1.5 text-sky-500 text-[11px] font-bold hover:gap-2 transition-all no-underline"
-                      >
-                        {t('map.asn_intel')} <ExternalLink size={12} className={i18n.language === 'fa' ? 'rotate-180' : ''} />
-                      </Link>
                     </div>
                   ))}
                 </div>
