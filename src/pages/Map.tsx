@@ -129,6 +129,16 @@ const MapPage: React.FC = () => {
         .leaflet-popup-content {
             margin: 0 !important;
         }
+        .leaflet-popup-close-button {
+            top: 24px !important;
+            right: 24px !important;
+            color: #94a3b8 !important;
+            font-size: 20px !important;
+            transition: color 0.2s !important;
+        }
+        .leaflet-popup-close-button:hover {
+            color: #475569 !important;
+        }
         .leaflet-popup-tip-container {
             display: none;
         }
