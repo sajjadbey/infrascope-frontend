@@ -78,7 +78,6 @@ const Topology: React.FC = () => {
     const cy = cyRef.current;
     cy.batch(() => {
       cy.elements().removeClass('highlighted highlight-origin highlight-dest highlight-tier1 dimmed');
-      // @ts-expect-error - Cytoscape types can be restrictive with removeStyle
       cy.edges().removeStyle();
     });
     setPathInfo(null);
@@ -368,12 +367,9 @@ const Topology: React.FC = () => {
         displayA2BPaths(originId, destId);
       }
     } catch (err: unknown) {
-      if (err && typeof err === 'object' && 'response' in err) {
-        const resp = (err as any).response;
-        showStatus('Failed to resolve: ' + (resp?.data?.error || (err as any).message), 'error');
-      } else {
-        showStatus('An unexpected error occurred', 'error');
-      }
+      const error = err as { response?: { data?: { error?: string } }, message?: string };
+      const msg = error.response?.data?.error || error.message || 'An unexpected error occurred';
+      showStatus('Failed to resolve: ' + msg, 'error');
     }
   };
 
@@ -449,7 +445,6 @@ const Topology: React.FC = () => {
             {
               selector: 'node',
               style: {
-                // @ts-expect-error - nodeSize is custom data
                 'width': 'data(nodeSize)', 'height': 'data(nodeSize)',
                 'label': 'data(label)', 'font-size': 9, 'color': '#475569',
                 'text-wrap': 'wrap', 'text-valign': 'bottom', 'text-margin-y': 4,
@@ -457,7 +452,7 @@ const Topology: React.FC = () => {
                 'border-width': 2, 'border-opacity': 1,
                 'text-outline-color': '#f8fafc', 'text-outline-width': 2,
                 'background-color': '#cbd5e1', 'border-color': '#94a3b8'
-              }
+              } as Record<string, string | number | undefined>
             },
             { selector: 'node[role="tier1"]', style: { 'background-color': '#ef4444', 'border-color': '#991b1b', 'font-size': 10 } },
             { selector: 'node[role="transit"]', style: { 'background-color': '#3b82f6', 'border-color': '#1d4ed8' } },
@@ -510,7 +505,7 @@ const Topology: React.FC = () => {
                 selector: 'edge.highlighted',
                 style: {
                   'line-color': '#f97316', 'target-arrow-color': '#f97316',
-                  'width': 3, 'opacity': 1, 'z-index': 9999,
+                  'width': '3px', 'opacity': 1, 'z-index': 9999,
                   'line-style': 'dashed', 'line-dash-pattern': [8, 5]
                 }
             },
@@ -519,11 +514,9 @@ const Topology: React.FC = () => {
           ],
           layout: {
             name: 'cose',
-            // @ts-expect-error - nodeOverlap is custom data
             nodeOverlap: 40,
             idealEdgeLength: () => 140,
             nodeRepulsion: () => 900000,
-            // @ts-expect-error - numIter is custom data
             numIter: 300,
             gravity: 50,
             randomize: true
