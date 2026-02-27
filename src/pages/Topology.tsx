@@ -427,18 +427,31 @@ const Topology: React.FC = () => {
             { selector: 'edge.highlighted', style: { 'line-color': '#f97316', 'target-arrow-color': '#f97316', 'width': 3, 'opacity': 1, 'z-index': 9999 } as CytoscapeStyle },
             { selector: 'node.dimmed', style: { 'opacity': 0.1 } }, { selector: 'edge.dimmed', style: { 'opacity': 0.05 } }
           ],
-          layout: { name: 'cose', nodeOverlap: 40, idealEdgeLength: () => 140, nodeRepulsion: () => 900000, numIter: 300, gravity: 50, randomize: true },
+          layout: { 
+            name: 'cose', 
+            nodeOverlap: 40, 
+            idealEdgeLength: () => 140, 
+            nodeRepulsion: () => 900000, 
+            numIter: 300, 
+            gravity: 50, 
+            randomize: true,
+            animate: false // Disable initial animation to prevent "glitchy" start
+          },
           // Performance settings
           textureOnViewport: true,
           hideEdgesOnViewport: true,
           motionBlur: true,
-          motionBlurOpacity: 0.1,
-          wheelSensitivity: 0.2,
+          motionBlurOpacity: 0.2,
+          wheelSensitivity: 0.8, // Faster, more responsive zooming
           pixelRatio: 'auto'
         });
 
+        // Only hide loader when layout is fully finished and stable
+        cyRef.current.one('layoutstop', () => {
+          setLoading(false);
+        });
+
         cyRef.current.on('tap', 'node', (evt) => handleNodeClick(evt.target.data('asn_number')));
-        setLoading(false);
       }
     }).catch(console.error);
 
