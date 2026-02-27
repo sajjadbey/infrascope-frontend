@@ -92,6 +92,10 @@ const resources = {
         no_path: "No path found between these two ASNs.",
         tier1_status: "This ASN is already a Tier-1 provider.",
         no_tier1: "No path to Tier-1 found for this ASN."
+      },
+      map: {
+        asn_network: "ASN Network",
+        asn_intel: "ASN Intelligence"
       }
     }
   },
@@ -184,6 +188,10 @@ const resources = {
         no_path: "هیچ مسیری بین این دو AS یافت نشد.",
         tier1_status: "این AS خود یک سرویس‌دهنده Tier-1 است.",
         no_tier1: "هیچ مسیری به Tier-1 برای این AS یافت نشد."
+      },
+      map: {
+        asn_network: "شبکه AS",
+        asn_intel: "جزئیات تحلیل AS"
       }
     }
   }
