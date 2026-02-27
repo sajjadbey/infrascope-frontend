@@ -124,7 +124,7 @@ const Home: React.FC = () => {
           <div className="relative flex flex-col md:flex-row items-center gap-12">
             <div className="shrink-0 select-none">
               <img 
-                src="https://cdn.jsdelivr.net/gh/twitter/twemoji@2.4/2/72x72/1f1ee-1f1f7.png" 
+                src="https://em-content.zobj.net/source/twitter/71/flag-for-iran_1f1ee-1f1f7.png" 
                 alt="Iran Flag" 
                 className="w-20 h-20 md:w-32 md:h-32 object-contain"
               />

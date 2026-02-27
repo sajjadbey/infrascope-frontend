@@ -4,7 +4,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { getMapData } from '../api';
 import { Link } from 'react-router-dom';
-import { MapPin, ExternalLink, Globe } from 'lucide-react';
+import { MapPin, ExternalLink } from 'lucide-react';
 
 interface MapNode {
   name: string;
@@ -29,9 +29,9 @@ const MapPage: React.FC = () => {
     className: 'datacenter-icon',
     html: `
         <div class="relative w-10 h-10 group marker-pulse">
-            <div class="absolute inset-0 bg-sky-500 rounded-full rounded-bl-none rotate-45 border-2 border-white shadow-xl shadow-sky-500/40 group-hover:scale-110 group-hover:bg-sky-600 transition-all duration-300"></div>
+            <div class="absolute inset-0 bg-sky-500 rounded-full rounded-bl-none -rotate-45 border-2 border-white shadow-xl shadow-sky-500/40 group-hover:scale-110 group-hover:bg-sky-600 transition-all duration-300"></div>
             <div class="absolute inset-0 flex items-center justify-center rotate-0">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 relative z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 relative z-10 rotate-90">
                     <rect width="20" height="8" x="2" y="2" rx="2" ry="2"/>
                     <rect width="20" height="8" x="2" y="14" rx="2" ry="2"/>
                     <line x1="6" x2="6.01" y1="6" y2="6"/>
@@ -48,18 +48,6 @@ const MapPage: React.FC = () => {
   return (
     <div className="relative h-[calc(100vh-140px)] -m-4 md:-m-6 flex flex-col overflow-hidden bg-slate-50 border border-slate-200 shadow-inner rounded-3xl">
       {/* Map Header Overlay */}
-      <div className="absolute top-6 left-6 z-1000 bg-white/80 backdrop-blur-md border border-slate-200 p-6 rounded-4xl shadow-xl max-w-sm hidden md:block">
-        <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-sky-500 text-white rounded-xl">
-                <Globe size={20} />
-            </div>
-            <h1 className="text-xl font-black text-slate-900 tracking-tight">GeoTopology</h1>
-        </div>
-        <p className="text-sm text-slate-500 font-medium leading-relaxed">
-            Mapping physical points of presence (PoP) across the Iranian plateau. 
-            Discover where the data actually resides.
-        </p>
-      </div>
 
       <MapContainer 
         center={[32.4278, 53.688]} 
@@ -124,13 +112,13 @@ const MapPage: React.FC = () => {
             border-radius: 50% 50% 50% 0;
             background: #0ea5e9;
             opacity: 0.4;
-            transform: rotate(45deg);
+            transform: rotate(-45deg);
             animation: pulse-pin 2s infinite;
             z-index: -1;
         }
         @keyframes pulse-pin {
-            0% { transform: rotate(45deg) scale(1); opacity: 0.4; }
-            100% { transform: rotate(45deg) scale(2.4); opacity: 0; }
+            0% { transform: rotate(-45deg) scale(1); opacity: 0.4; }
+            100% { transform: rotate(-45deg) scale(2.4); opacity: 0; }
         }
         .leaflet-popup-content-wrapper {
             border-radius: 2rem !important;
