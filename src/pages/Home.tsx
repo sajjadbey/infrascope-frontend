@@ -122,7 +122,13 @@ const Home: React.FC = () => {
         <section className="bg-[#0f172a] rounded-[2.5rem] p-8 md:p-16 relative overflow-hidden text-white shadow-2xl">
           <div className="absolute right-0 top-0 h-full w-1/3 bg-linear-to-l from-sky-500/10 to-transparent pointer-events-none" />
           <div className="relative flex flex-col md:flex-row items-center gap-12">
-            <div className="text-7xl md:text-8xl select-none">🇮🇷</div>
+            <div className="shrink-0 select-none">
+              <img 
+                src="https://cdn.jsdelivr.net/gh/twitter/twemoji@2.4/2/72x72/1f1ee-1f1f7.png" 
+                alt="Iran Flag" 
+                className="w-20 h-20 md:w-32 md:h-32 object-contain"
+              />
+            </div>
             <div className="space-y-6">
               <h2 className="text-3xl font-bold">Deep Infrastructure Insights</h2>
               <p className="text-slate-400 text-lg leading-relaxed max-w-3xl">
