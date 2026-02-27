@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getStats } from '../api';
 import { Network, Share2, Database, Globe, MapPin, ArrowRight } from 'lucide-react';
-import { iran_flag } from '../assets/iran_flag_twemoji.png'
+import iran_flag from '../assets/iran_flag_twemoji.png';
 const Home: React.FC = () => {
   const [stats, setStats] = useState<{
     total_asns: number;
