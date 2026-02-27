@@ -195,15 +195,15 @@ const Topology: React.FC = () => {
         cy.elements().addClass('dimmed');
         node.removeClass('dimmed').addClass('highlight-origin');
       });
-      setPathInfo({ type: 'a2b', title: 'Same Node', paths: [[startCyId]] });
+      setPathInfo({ type: 'a2b', title: t('topology.same_node'), paths: [[startCyId]] });
       cy.animate({ center: { eles: node }, zoom: 1.5 }, { duration: 500 });
-      showStatus('Origin and destination are the same ASN.', 'info');
+      showStatus(t('topology.same_node'), 'info');
       return;
     }
 
     const allPaths = bfsAllShortestPaths(startCyId, endCyId, 10);
     if (!allPaths || allPaths.length === 0) {
-      showStatus('No path found between these two ASNs.', 'error');
+      showStatus(t('topology.no_path'), 'error');
       return;
     }
 
@@ -252,15 +252,15 @@ const Topology: React.FC = () => {
         cy.elements().addClass('dimmed');
         startNode.removeClass('dimmed').addClass('highlight-tier1');
       });
-      setPathInfo({ type: 'tier1', title: 'Paths to Tier-1', paths: [[startCyId]] });
+      setPathInfo({ type: 'tier1', title: t('topology.tier1_status'), paths: [[startCyId]] });
       cy.animate({ center: { eles: startNode }, zoom: 1.5 }, { duration: 500 });
-      showStatus(i18n.language === 'fa' ? 'این AS خود یک سرویس‌دهنده Tier-1 است.' : 'This ASN is already a Tier-1 provider.', 'success');
+      showStatus(t('topology.tier1_status'), 'success');
       return;
     }
 
     const allPaths = findAllPathsToTier1(startCyId);
     if (!allPaths || allPaths.length === 0) {
-      showStatus(i18n.language === 'fa' ? 'هیچ مسیری به Tier-1 برای این AS یافت نشد.' : 'No path to Tier-1 found for this ASN.', 'error');
+      showStatus(t('topology.no_tier1'), 'error');
       return;
     }
 
@@ -319,7 +319,7 @@ const Topology: React.FC = () => {
     if (!cyRef.current) return;
     const originRaw = originInput.trim();
     const destRaw = destInput.trim();
-    if (!originRaw) { showStatus('Please enter an origin ASN, IP address, or domain.', 'error'); return; }
+    if (!originRaw) { showStatus(t('ui.search'), 'error'); return; }
 
     try {
       let originQuery = { query: originRaw.toLowerCase(), label: '' };
@@ -495,12 +495,12 @@ const Topology: React.FC = () => {
         <div className="flex-1 flex items-center gap-2 w-full">
             <input type="text" placeholder={t('ui.search')} className="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:border-sky-500 transition-all font-mono text-xs text-slate-700 outline-none" value={originInput} onChange={(e) => setOriginInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSearch()} />
             <span className="text-slate-300 font-bold">→</span>
-            <input type="text" placeholder={i18n.language === 'fa' ? 'مقصد (اختیاری)' : 'Destination (Optional)'} className="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:border-sky-500 transition-all font-mono text-xs text-slate-700 outline-none" value={destInput} onChange={(e) => setDestInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSearch()} />
+            <input type="text" placeholder={t('topology.dest_placeholder')} className="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:border-sky-500 transition-all font-mono text-xs text-slate-700 outline-none" value={destInput} onChange={(e) => setDestInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSearch()} />
         </div>
         <div className="flex gap-2 w-full md:w-auto">
-            <button onClick={handleSearch} className="flex-1 md:flex-none px-6 py-2 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all text-xs">{i18n.language === 'fa' ? 'یافتن مسیر' : 'Find Path'}</button>
-            <button onClick={() => { setOriginInput(''); setDestInput(''); resetHighlights(); }} className="px-4 py-2 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors text-xs font-bold text-slate-500">{i18n.language === 'fa' ? 'پاک کردن' : 'Clear'}</button>
-            <button onClick={() => setIsLegendOpen(!isLegendOpen)} className="md:hidden px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-600">{i18n.language === 'fa' ? 'راهنما' : 'Legend'}</button>
+            <button onClick={handleSearch} className="flex-1 md:flex-none px-6 py-2 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all text-xs">{t('topology.find_path')}</button>
+            <button onClick={() => { setOriginInput(''); setDestInput(''); resetHighlights(); }} className="px-4 py-2 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors text-xs font-bold text-slate-500">{t('topology.clear')}</button>
+            <button onClick={() => setIsLegendOpen(!isLegendOpen)} className="md:hidden px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-600">{t('topology.legend')}</button>
         </div>
       </div>
       
@@ -508,7 +508,7 @@ const Topology: React.FC = () => {
         {loading && (
             <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-white/95 backdrop-blur-sm gap-4">
             <Loader2 className="animate-spin text-sky-500" size={48} />
-            <p className="text-slate-600 font-bold tracking-tight">Mapping National Infrastructure...</p>
+            <p className="text-slate-600 font-bold tracking-tight">{t('topology.mapping')}</p>
             </div>
         )}
         <div ref={containerRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
@@ -535,7 +535,7 @@ const Topology: React.FC = () => {
                                             {nIdx > 0 && <span className="text-slate-300 font-bold"><CornerDownRight size={12} className={i18n.language === 'fa' ? 'rotate-90' : ''} /></span>}
                                             <div className="flex flex-col">
                                                 <span className={`font-bold ${isOrigin ? 'text-emerald-600' : isDest ? 'text-violet-600' : 'text-slate-700'}`}>{node?.data('label')?.replace('\n', ' – ') || nodeId}</span>
-                                                {(isOrigin || isDest) && <span className="text-[9px] uppercase tracking-tighter text-slate-400 font-black">{isOrigin ? (i18n.language === 'fa' ? 'مبدا' : 'Origin Point') : (i18n.language === 'fa' ? 'مقصد' : 'Destination')}</span>}
+                                                {(isOrigin || isDest) && <span className="text-[9px] uppercase tracking-tighter text-slate-400 font-black">{isOrigin ? t('topology.origin_point') : t('topology.destination')}</span>}
                                             </div>
                                         </li>
                                     );
@@ -548,12 +548,12 @@ const Topology: React.FC = () => {
         )}
 
         <div className={`absolute bottom-6 right-6 bg-white/80 backdrop-blur-md border border-slate-200 p-6 rounded-4xl shadow-xl w-64 space-y-4 transition-all z-10 ${isLegendOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
-            <h3 className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest"><Info size={14} className="text-sky-500" /> {i18n.language === 'fa' ? 'انواع گره‌های زیرساخت' : 'Infrastructure Node Types'}</h3>
+            <h3 className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest"><Info size={14} className="text-sky-500" /> {t('topology.legend_title')}</h3>
             <div className="space-y-3">
-                <div className="flex items-center gap-3"><div className="w-3 h-3 rounded-full bg-red-500 border-2 border-red-800" /><span className="text-xs font-bold text-slate-700">{i18n.language === 'fa' ? 'Tier-1 / شبکه اصلی' : 'Tier-1 / Backbone'}</span></div>
-                <div className="flex items-center gap-3"><div className="w-3 h-3 rounded-full bg-blue-500 border-2 border-blue-800" /><span className="text-xs font-bold text-slate-700">{i18n.language === 'fa' ? 'ترانزیت / سرویس‌دهنده' : 'Transit / Provider'}</span></div>
-                <div className="flex items-center gap-3"><div className="w-3 h-3 rounded-full bg-emerald-500 border-2 border-emerald-800" /><span className="text-xs font-bold text-slate-700">{i18n.language === 'fa' ? 'دسترسی / مبدا' : 'Access / Origin'}</span></div>
-                <div className="flex items-center gap-3"><div className="w-3 h-3 rounded-full bg-amber-500 border-2 border-amber-800" /><span className="text-xs font-bold text-slate-700">{i18n.language === 'fa' ? 'گره مستقل' : 'Standalone Node'}</span></div>
+                <div className="flex items-center gap-3"><div className="w-3 h-3 rounded-full bg-red-500 border-2 border-red-800" /><span className="text-xs font-bold text-slate-700">{t('topology.node_tier1')}</span></div>
+                <div className="flex items-center gap-3"><div className="w-3 h-3 rounded-full bg-blue-500 border-2 border-blue-800" /><span className="text-xs font-bold text-slate-700">{t('topology.node_transit')}</span></div>
+                <div className="flex items-center gap-3"><div className="w-3 h-3 rounded-full bg-emerald-500 border-2 border-emerald-800" /><span className="text-xs font-bold text-slate-700">{t('topology.node_access')}</span></div>
+                <div className="flex items-center gap-3"><div className="w-3 h-3 rounded-full bg-amber-500 border-2 border-amber-800" /><span className="text-xs font-bold text-slate-700">{t('topology.node_standalone')}</span></div>
             </div>
         </div>
 
@@ -583,24 +583,24 @@ const Topology: React.FC = () => {
                       {popupData.error ? (
                         <div className="py-8 flex flex-col items-center justify-center gap-3 text-slate-400">
                           <AlertCircle size={40} className="text-slate-200" />
-                          <p className="text-xs font-bold uppercase tracking-widest text-center">{i18n.language === 'fa' ? 'اطلاعاتی برای این گره موجود نیست' : 'Intel unavailable for this Node'}</p>
+                          <p className="text-xs font-bold uppercase tracking-widest text-center">{t('topology.intel_unavailable')}</p>
                         </div>
                       ) : (
                         <>
                           <div className="flex justify-between items-center py-2 border-b border-slate-50">
-                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{i18n.language === 'fa' ? 'نوع' : 'Type'}</span>
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('topology.type')}</span>
                               <span className="text-xs font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded">{i18n.language === 'fa' ? (popupData.network_type_fa || popupData.network_type) : popupData.network_type}</span>
                           </div>
                           <div className="flex justify-between items-center py-2 border-b border-slate-50">
-                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{i18n.language === 'fa' ? 'وضعیت' : 'Status'}</span>
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('topology.status')}</span>
                               <span className={`text-xs font-bold px-2 py-0.5 rounded ${popupData.network_status?.toLowerCase().includes('active') ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-600'}`}>{i18n.language === 'fa' ? (popupData.network_status_fa || popupData.network_status) : popupData.network_status}</span>
                           </div>
                           <div className="flex justify-between items-center py-2 border-b border-slate-50">
-                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{i18n.language === 'fa' ? 'مالک' : 'Owner'}</span>
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('topology.owner')}</span>
                               <span className="text-xs font-bold text-slate-700 max-w-[140px] truncate">{popupData.registered_to}</span>
                           </div>
                           <div className="flex justify-between items-center py-2">
-                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{i18n.language === 'fa' ? 'همسایگان' : 'Peers (U/D)'}</span>
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('topology.peers')}</span>
                               <span className="text-xs font-mono font-black text-slate-900">{popupData.upstreams_count} / {popupData.downstreams_count}</span>
                           </div>
                         </>
@@ -608,7 +608,7 @@ const Topology: React.FC = () => {
                   </div>
 
                   <div className="p-6 pt-0">
-                      <Link to={`/asn/${popupData.asn_number}`} className="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-all text-sm">{i18n.language === 'fa' ? 'جزئیات عمیق' : 'Deep Intelligence'} <ArrowRight size={18} className={i18n.language === 'fa' ? 'rotate-180' : ''} /></Link>
+                      <Link to={`/asn/${popupData.asn_number}`} className="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-all text-sm">{t('topology.deep_intel')} <ArrowRight size={18} className={i18n.language === 'fa' ? 'rotate-180' : ''} /></Link>
                   </div>
               </div>
           </div>

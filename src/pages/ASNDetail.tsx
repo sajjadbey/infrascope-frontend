@@ -53,16 +53,16 @@ const ASNDetail: React.FC = () => {
   if (loading) return (
     <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
       <Loader2 className="animate-spin text-sky-500" size={48} />
-      <p className="text-slate-500 font-medium tracking-tight">Fetching ASN Intel...</p>
+      <p className="text-slate-500 font-medium tracking-tight">{t('asn_detail.fetching')}</p>
     </div>
   );
 
   if (!asn) return (
     <div className="text-center py-20 px-6">
        <div className="bg-red-50 text-red-600 p-8 rounded-3xl border border-red-100 max-w-md mx-auto">
-          <h2 className="text-2xl font-bold mb-2">ASN Not Found</h2>
-          <p className="text-red-500/80 mb-6">The requested Autonomous System could not be found in our database.</p>
-          <Link to="/topology" className="px-6 py-3 bg-red-600 text-white rounded-xl font-bold">Return to Topology</Link>
+          <h2 className="text-2xl font-bold mb-2">{t('asn_detail.not_found')}</h2>
+          <p className="text-red-500/80 mb-6">{t('asn_detail.not_found_desc')}</p>
+          <Link to="/topology" className="px-6 py-3 bg-red-600 text-white rounded-xl font-bold">{t('asn_detail.return_btn')}</Link>
        </div>
     </div>
   );
@@ -111,24 +111,24 @@ const ASNDetail: React.FC = () => {
           <div className="bg-white border border-slate-200 rounded-4xl overflow-hidden shadow-sm">
             <div className="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center gap-2">
               <ShieldCheck size={18} className="text-sky-500" />
-              <h3 className="font-bold text-slate-900 text-sm uppercase tracking-wider">Registration</h3>
+              <h3 className="font-bold text-slate-900 text-sm uppercase tracking-wider">{t('asn_detail.registration')}</h3>
             </div>
             <div className="p-6 space-y-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-widest">
-                  <User size={12} /> Registered To
+                  <User size={12} /> {t('asn_detail.registered_to')}
                 </div>
                 <div className="text-slate-900 font-semibold">{asn.registered_to || '—'}</div>
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-widest">
-                  <Globe size={12} /> Registrar
+                  <Globe size={12} /> {t('asn_detail.registrar')}
                 </div>
                 <div className="text-slate-900 font-semibold">{asn.registrar || '—'}</div>
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-widest">
-                  <Calendar size={12} /> Registered On
+                  <Calendar size={12} /> {t('asn_detail.registered_on')}
                 </div>
                 <div className="text-slate-900 font-semibold">{asn.registered_on || '—'}</div>
               </div>
@@ -139,12 +139,12 @@ const ASNDetail: React.FC = () => {
           <div className="bg-white border border-slate-200 rounded-4xl overflow-hidden shadow-sm">
             <div className="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center gap-2">
               <Share2 size={18} className="text-sky-500" />
-              <h3 className="font-bold text-slate-900 text-sm uppercase tracking-wider">Peering Graph</h3>
+              <h3 className="font-bold text-slate-900 text-sm uppercase tracking-wider">{t('asn_detail.peering_graph')}</h3>
             </div>
             <div className="p-6 space-y-8">
               <div className="space-y-4">
                 <h4 className="flex items-center gap-2 text-xs font-black text-slate-400 uppercase tracking-widest">
-                  <Activity size={14} className="text-red-400" /> Upstreams
+                  <Activity size={14} className="text-red-400" /> {t('asn_detail.upstreams')}
                 </h4>
                 {asn.upstreams?.length > 0 ? (
                   <div className="flex flex-col gap-2">
@@ -158,12 +158,12 @@ const ASNDetail: React.FC = () => {
                       </Link>
                     ))}
                   </div>
-                ) : <p className="text-slate-400 text-sm italic py-2">No upstream data available</p>}
+                ) : <p className="text-slate-400 text-sm italic py-2">{t('asn_detail.no_upstreams')}</p>}
               </div>
 
               <div className="space-y-4">
                 <h4 className="flex items-center gap-2 text-xs font-black text-slate-400 uppercase tracking-widest">
-                  <Activity size={14} className="text-emerald-400 rotate-180" /> Downstreams
+                  <Activity size={14} className="text-emerald-400 rotate-180" /> {t('asn_detail.downstreams')}
                 </h4>
                 {asn.downstreams?.length > 0 ? (
                   <div className="flex flex-col gap-2">
@@ -177,7 +177,7 @@ const ASNDetail: React.FC = () => {
                       </Link>
                     ))}
                   </div>
-                ) : <p className="text-slate-400 text-sm italic py-2">No downstream dependencies</p>}
+                ) : <p className="text-slate-400 text-sm italic py-2">{t('asn_detail.no_downstreams')}</p>}
               </div>
             </div>
           </div>
@@ -192,12 +192,12 @@ const ASNDetail: React.FC = () => {
                    <List size={22} className="text-indigo-600" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900">Prefix Inventory</h3>
-                  <p className="text-xs text-slate-400 font-medium">Publicly announced IPv4 blocks</p>
+                  <h3 className="font-bold text-slate-900">{t('asn_detail.prefix_inventory')}</h3>
+                  <p className="text-xs text-slate-400 font-medium">{t('asn_detail.prefix_desc')}</p>
                 </div>
               </div>
               <span className="px-4 py-1.5 bg-slate-100 rounded-full text-xs font-bold text-slate-500">
-                {asn.prefixes?.filter(p => p.ip_version === 4).length || 0} Total
+                {asn.prefixes?.filter(p => p.ip_version === 4).length || 0} {t('asn_detail.total')}
               </span>
             </div>
             
@@ -206,8 +206,8 @@ const ASNDetail: React.FC = () => {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-slate-50/50">
-                      <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">IPv4 Prefix</th>
-                      <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Broadcast Description</th>
+                      <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">{t('asn_detail.table_prefix')}</th>
+                      <th className="px-8 py-4 text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">{t('asn_detail.table_desc')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50">
@@ -220,7 +220,7 @@ const ASNDetail: React.FC = () => {
                         </td>
                         <td className="px-8 py-5">
                           <span className="text-sm font-medium text-slate-600">
-                            {p.description || 'Generic local assignment'}
+                            {p.description || t('asn_detail.generic_desc')}
                           </span>
                         </td>
                       </tr>
@@ -230,7 +230,7 @@ const ASNDetail: React.FC = () => {
               ) : (
                 <div className="p-20 text-center space-y-4">
                    <div className="text-slate-200 inline-block"><Share2 size={64} /></div>
-                   <p className="text-slate-400 text-sm font-medium">No direct prefixes announced from this AS.</p>
+                   <p className="text-slate-400 text-sm font-medium">{t('asn_detail.no_prefixes')}</p>
                 </div>
               )}
             </div>
