@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getStats } from '../api';
-import { Network, Share2, Database, Globe, MapPin, ArrowRight } from 'lucide-react';
+import { Network, Share2, Database, Globe, MapPin, ArrowRight, Server, Users, Zap } from 'lucide-react';
 import iran_flag from '../assets/iran_flag_twemoji.png';
 const Home: React.FC = () => {
   const [stats, setStats] = useState<{
     total_asns: number;
     total_prefixes_v4: number;
     total_locations: number;
+    data_center_count: number;
+    home_isp_count: number;
+    cdn_count: number;
   } | null>(null);
 
   useEffect(() => {
@@ -80,6 +83,30 @@ const Home: React.FC = () => {
               </div>
               <div className="text-4xl font-black text-slate-900 mb-1">{stats.total_locations}</div>
               <div className="text-slate-500 font-semibold uppercase tracking-wider text-xs">PoP Locations Mapping</div>
+            </div>
+
+            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+              <div className="p-3 bg-amber-50 rounded-xl w-fit mb-4">
+                <Server className="text-amber-500" size={24} />
+              </div>
+              <div className="text-4xl font-black text-slate-900 mb-1">{stats.data_center_count}</div>
+              <div className="text-slate-500 font-semibold uppercase tracking-wider text-xs">Data Centers Identified</div>
+            </div>
+
+            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+              <div className="p-3 bg-orange-50 rounded-xl w-fit mb-4">
+                <Users className="text-orange-500" size={24} />
+              </div>
+              <div className="text-4xl font-black text-slate-900 mb-1">{stats.home_isp_count}</div>
+              <div className="text-slate-500 font-semibold uppercase tracking-wider text-xs">Home ISP Networks</div>
+            </div>
+
+            <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+              <div className="p-3 bg-cyan-50 rounded-xl w-fit mb-4">
+                <Zap className="text-cyan-500" size={24} />
+              </div>
+              <div className="text-4xl font-black text-slate-900 mb-1">{stats.cdn_count}</div>
+              <div className="text-slate-500 font-semibold uppercase tracking-wider text-xs">CDN PoP Nodes</div>
             </div>
           </div>
         )}
