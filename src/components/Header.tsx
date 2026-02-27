@@ -1,17 +1,26 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Home, Map as MapIcon, Search, LayoutGrid } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { t, i18n } = useTranslation();
   const location = useLocation();
 
   const navItems = [
-    { name: 'Home', path: '/', icon: <Home size={18} /> },
-    { name: 'Topology', path: '/topology', icon: <LayoutGrid size={18} /> },
-    { name: 'Network Map', path: '/map', icon: <MapIcon size={18} /> },
-    { name: 'IP Lookup', path: '/lookup', icon: <Search size={18} /> },
+    { name: t('nav.home'), path: '/', icon: <Home size={18} /> },
+    { name: t('nav.topology'), path: '/topology', icon: <LayoutGrid size={18} /> },
+    { name: t('nav.map'), path: '/map', icon: <MapIcon size={18} /> },
+    { name: t('nav.lookup'), path: '/lookup', icon: <Search size={18} /> },
   ];
+
+  const toggleLanguage = () => {
+    const newLang = i18n.language === 'en' ? 'fa' : 'en';
+    i18n.changeLanguage(newLang);
+    document.documentElement.dir = newLang === 'fa' ? 'rtl' : 'ltr';
+    document.documentElement.lang = newLang;
+  };
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -26,35 +35,54 @@ const Header: React.FC = () => {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive(item.path)
-                  ? 'text-white bg-white/10'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              {item.name}
-            </Link>
-          ))}
-        </nav>
+        <div className="hidden lg:flex items-center gap-6">
+          <nav className="flex items-center gap-1">
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  isActive(item.path)
+                    ? 'text-white bg-white/10'
+                    : 'text-slate-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                {item.name}
+              </Link>
+            ))}
+          </nav>
+
+          <button
+            onClick={toggleLanguage}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/10 text-xs font-bold text-white hover:bg-white/5 transition-all select-none"
+          >
+             {i18n.language === 'en' ? 'FA' : 'EN'}
+             <span className="opacity-40 font-normal">|</span>
+             <span className={i18n.language === 'fa' ? 'text-sky-400' : ''}>FA</span>
+          </button>
+        </div>
 
         {/* Mobile Toggle */}
-        <button
-          className="lg:hidden p-2 text-slate-400 hover:text-white transition-colors"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label="Toggle menu"
-        >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="flex items-center gap-2 lg:hidden">
+          <button
+              onClick={toggleLanguage}
+              className="px-3 py-1.5 rounded-full border border-white/10 text-xs font-bold text-white"
+          >
+              {i18n.language === 'en' ? 'FA' : 'EN'}
+          </button>
+          <button
+            className="p-2 text-slate-400 hover:text-white transition-colors"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Nav Overlay/Panel */}
       {isMenuOpen && (
-        <div className="lg:hidden bg-[#1e293b] border-t border-white/10 p-4 shadow-xl">
+        <div className="lg:hidden bg-[#1e293b] border-t border-white/10 p-4 shadow-xl animate-in fade-in slide-in-from-top-2">
           <div className="flex flex-col gap-4">
             {navItems.map((item) => (
               <Link

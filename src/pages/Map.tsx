@@ -5,20 +5,24 @@ import 'leaflet/dist/leaflet.css';
 import { getMapData } from '../api';
 import { Link } from 'react-router-dom';
 import { MapPin, ExternalLink } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface MapNode {
   name: string;
+  name_fa?: string;
   asn_number: number;
   asn_name: string;
-  node_types: Array<{ id: number; name: string; color: string }>;
+  asn_name_fa?: string;
+  node_types: Array<{ id: number; name: string; name_fa?: string; color: string }>;
 }
 
 interface Feature {
   geometry: { coordinates: [number, number] };
-  properties: { name: string; nodes: MapNode[] };
+  properties: { name: string; name_fa?: string; nodes: MapNode[] };
 }
 
 const MapPage: React.FC = () => {
+  const { i18n } = useTranslation();
   const [geoData, setGeoData] = useState<{ features: Feature[] } | null>(null);
 
   useEffect(() => {
@@ -69,30 +73,33 @@ const MapPage: React.FC = () => {
               <div className="w-[300px] p-4 space-y-4">
                 <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
                     <h3 className="font-bold text-slate-900 flex items-center gap-2">
-                        <MapPin size={16} className="text-sky-500" /> {feature.properties.name}
+                        <MapPin size={16} className="text-sky-500" /> 
+                         {i18n.language === 'fa' ? (feature.properties.name_fa || feature.properties.name) : feature.properties.name}
                     </h3>
                 </div>
                 
                 <div className="max-h-[300px] overflow-y-auto pr-2 space-y-4 scrollbar-thin scrollbar-thumb-slate-200">
                   {feature.properties.nodes.map((node, nIdx: number) => (
                     <div key={nIdx} className="group p-3 bg-slate-50 rounded-2xl hover:bg-sky-50 transition-colors border border-transparent hover:border-sky-100">
-                      <div className="text-sm font-black text-slate-800 mb-2">{node.name}</div>
+                      <div className="text-sm font-black text-slate-800 mb-2">
+                        {i18n.language === 'fa' ? (node.name_fa || node.name) : node.name}
+                      </div>
                       <div className="flex flex-wrap gap-1 mb-2">
                         {node.node_types?.map((nt) => (
                           <span key={nt.id} className="text-[10px] font-black uppercase tracking-tighter px-2 py-0.5 rounded text-white shadow-sm" style={{ background: nt.color }}>
-                            {nt.name}
+                            {i18n.language === 'fa' ? (nt.name_fa || nt.name) : nt.name}
                           </span>
                         ))}
                       </div>
                       <div className="flex flex-col gap-1">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">ASN Network</span>
-                        <div className="text-[11px] font-bold text-slate-600">AS{node.asn_number} <span className="font-medium text-slate-400">— {node.asn_name}</span></div>
+                        <div className="text-[11px] font-bold text-slate-600">AS{node.asn_number} <span className="font-medium text-slate-400">— {i18n.language === 'fa' ? (node.asn_name_fa || node.asn_name) : node.asn_name}</span></div>
                       </div>
                       <Link 
                         to={`/asn/${node.asn_number}`} 
                         className="mt-3 flex items-center gap-1.5 text-sky-500 text-[11px] font-bold hover:gap-2 transition-all no-underline"
                       >
-                        ASN Intelligence <ExternalLink size={12} />
+                        ASN Intelligence <ExternalLink size={12} className={i18n.language === 'fa' ? 'rotate-180' : ''} />
                       </Link>
                     </div>
                   ))}

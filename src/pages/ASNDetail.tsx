@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getASNDetail } from '../api';
 import { ArrowLeft, Activity, Calendar, User, ShieldCheck, Share2, Loader2, List, Globe } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface Upstream {
   id: number;
   asn_number: number;
   name: string;
+  name_fa?: string;
 }
 
 interface Prefix {
@@ -19,9 +21,11 @@ interface Prefix {
 interface ASN {
   asn_number: number;
   name: string;
+  name_fa?: string;
   description: string;
-  network_type: { name: string };
-  network_status: { name: string };
+  description_fa?: string;
+  network_type: { name: string; name_fa?: string };
+  network_status: { name: string; name_fa?: string };
   registered_to: string;
   registrar: string;
   registered_on: string;
@@ -31,6 +35,7 @@ interface ASN {
 }
 
 const ASNDetail: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const { asnNumber } = useParams<{ asnNumber: string }>();
   const [asn, setAsn] = useState<ASN | null>(null);
   const [loading, setLoading] = useState(true);
@@ -69,9 +74,9 @@ const ASNDetail: React.FC = () => {
           to="/topology" 
           className="p-2 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-sm"
         >
-          <ArrowLeft size={20} className="text-slate-600" />
+          <ArrowLeft size={20} className={`text-slate-600 ${i18n.language === 'fa' ? 'rotate-180' : ''}`} />
         </Link>
-        <span className="text-slate-400 font-medium">Network Database / AS{asn.asn_number}</span>
+        <span className="text-slate-400 font-medium">{t('nav.map')} / AS{asn.asn_number}</span>
       </div>
 
       {/* Header Card */}
@@ -81,14 +86,20 @@ const ASNDetail: React.FC = () => {
           <div className="flex flex-wrap items-center gap-4">
             <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">AS{asn.asn_number}</h1>
             <div className="flex gap-2">
-              <span className="px-3 py-1 bg-sky-100 text-sky-700 rounded-full text-xs font-black uppercase tracking-widest">{asn.network_type.name}</span>
-              <span className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-black uppercase tracking-widest">{asn.network_status.name}</span>
+              <span className="px-3 py-1 bg-sky-100 text-sky-700 rounded-full text-xs font-black uppercase tracking-widest">
+                {i18n.language === 'fa' ? (asn.network_type.name_fa || asn.network_type.name) : asn.network_type.name}
+              </span>
+              <span className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-black uppercase tracking-widest">
+                {i18n.language === 'fa' ? (asn.network_status.name_fa || asn.network_status.name) : asn.network_status.name}
+              </span>
             </div>
           </div>
-          <h2 className="text-xl md:text-2xl text-slate-500 font-medium leading-tight">{asn.name}</h2>
-          {asn.description && (
-            <p className="text-slate-400 text-lg leading-relaxed max-w-3xl border-l-4 border-slate-100 pl-6">
-              {asn.description}
+          <h2 className="text-xl md:text-2xl text-slate-500 font-medium leading-tight">
+            {i18n.language === 'fa' ? (asn.name_fa || asn.name) : asn.name}
+          </h2>
+          {(asn.description || asn.description_fa) && (
+            <p className={`text-slate-400 text-lg leading-relaxed max-w-3xl border-l-4 border-slate-100 pl-6 ${i18n.language === 'fa' ? 'border-l-0 border-r-4 pl-0 pr-6' : ''}`}>
+              {i18n.language === 'fa' ? (asn.description_fa || asn.description) : asn.description}
             </p>
           )}
         </div>

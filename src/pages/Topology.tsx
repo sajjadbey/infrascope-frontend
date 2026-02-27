@@ -3,11 +3,13 @@ import cytoscape from 'cytoscape';
 import { getTopologyData, lookupIP, getASNSummary } from '../api';
 import { Loader2, Info, Maximize2, ZoomIn, ZoomOut, RotateCcw, Search, X, ArrowRight, CornerDownRight, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface NodeData {
   id: number;
   asn_number: number;
   name: string;
+  name_fa?: string;
   label: string;
   role: string;
 }
@@ -32,8 +34,13 @@ interface SearchStatus {
 interface ASNSummary {
   asn_number?: number;
   name?: string;
+  name_fa?: string;
+  description?: string;
+  description_fa?: string;
   network_type?: string;
+  network_type_fa?: string;
   network_status?: string;
+  network_status_fa?: string;
   registrar?: string;
   registered_to?: string;
   upstreams_count?: number;
@@ -51,6 +58,7 @@ const PATH_COLORS = [
 ];
 
 const Topology: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
   const cyRef = useRef<cytoscape.Core | null>(null);
   const [loading, setLoading] = useState(true);
@@ -93,6 +101,7 @@ const Topology: React.FC = () => {
     const nodes = rawNodesRef.current;
     for (const n of nodes) {
       if ((n.name || '').toLowerCase().includes(query.toLowerCase()) ||
+          ((n.name_fa || '').toLowerCase().includes(query.toLowerCase())) ||
           (n.label || '').toLowerCase().includes(query.toLowerCase())) {
         return 'n' + n.id;
       }
@@ -245,13 +254,13 @@ const Topology: React.FC = () => {
       });
       setPathInfo({ type: 'tier1', title: 'Paths to Tier-1', paths: [[startCyId]] });
       cy.animate({ center: { eles: startNode }, zoom: 1.5 }, { duration: 500 });
-      showStatus('This ASN is already a Tier-1 provider.', 'success');
+      showStatus(i18n.language === 'fa' ? 'این AS خود یک سرویس‌دهنده Tier-1 است.' : 'This ASN is already a Tier-1 provider.', 'success');
       return;
     }
 
     const allPaths = findAllPathsToTier1(startCyId);
     if (!allPaths || allPaths.length === 0) {
-      showStatus('No path to Tier-1 found for this ASN.', 'error');
+      showStatus(i18n.language === 'fa' ? 'هیچ مسیری به Tier-1 برای این AS یافت نشد.' : 'No path to Tier-1 found for this ASN.', 'error');
       return;
     }
 
@@ -386,7 +395,17 @@ const Topology: React.FC = () => {
         biAdjRef.current[cyId] = [];
         const size = role === 'tier1' ? 40 : Math.round(12 + ((inDeg[n.id] || 0) / maxIn) * 22);
         elements.push({
-          data: { id: cyId, label: `AS${n.asn_number || n.id}\n${n.name?.substring(0, 22)}`, role, asn_number: n.asn_number, name: n.name, nodeSize: size }
+          data: { 
+            id: cyId, 
+            label: i18n.language === 'fa' 
+              ? `AS${n.asn_number || n.id}\n${(n.name_fa || n.name)?.substring(0, 22)}` 
+              : `AS${n.asn_number || n.id}\n${n.name?.substring(0, 22)}`, 
+            role, 
+            asn_number: n.asn_number, 
+            name: n.name,
+            name_fa: n.name_fa,
+            nodeSize: size 
+          }
         });
       });
 
@@ -474,14 +493,14 @@ const Topology: React.FC = () => {
 
       <div className="bg-white border-b border-slate-200 p-4 relative z-20 shadow-sm flex flex-col md:flex-row items-center gap-4">
         <div className="flex-1 flex items-center gap-2 w-full">
-            <input type="text" placeholder="Origin (ASN / IP / Domain)" className="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:border-sky-500 transition-all font-mono text-xs text-slate-700 outline-none" value={originInput} onChange={(e) => setOriginInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSearch()} />
+            <input type="text" placeholder={t('ui.search')} className="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:border-sky-500 transition-all font-mono text-xs text-slate-700 outline-none" value={originInput} onChange={(e) => setOriginInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSearch()} />
             <span className="text-slate-300 font-bold">→</span>
-            <input type="text" placeholder="Destination (Optional)" className="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:border-sky-500 transition-all font-mono text-xs text-slate-700 outline-none" value={destInput} onChange={(e) => setDestInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSearch()} />
+            <input type="text" placeholder={i18n.language === 'fa' ? 'مقصد (اختیاری)' : 'Destination (Optional)'} className="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:border-sky-500 transition-all font-mono text-xs text-slate-700 outline-none" value={destInput} onChange={(e) => setDestInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSearch()} />
         </div>
         <div className="flex gap-2 w-full md:w-auto">
-            <button onClick={handleSearch} className="flex-1 md:flex-none px-6 py-2 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all text-xs">Find Path</button>
-            <button onClick={() => { setOriginInput(''); setDestInput(''); resetHighlights(); }} className="px-4 py-2 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors text-xs font-bold text-slate-500">Clear</button>
-            <button onClick={() => setIsLegendOpen(!isLegendOpen)} className="md:hidden px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-600">Legend</button>
+            <button onClick={handleSearch} className="flex-1 md:flex-none px-6 py-2 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all text-xs">{i18n.language === 'fa' ? 'یافتن مسیر' : 'Find Path'}</button>
+            <button onClick={() => { setOriginInput(''); setDestInput(''); resetHighlights(); }} className="px-4 py-2 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors text-xs font-bold text-slate-500">{i18n.language === 'fa' ? 'پاک کردن' : 'Clear'}</button>
+            <button onClick={() => setIsLegendOpen(!isLegendOpen)} className="md:hidden px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-600">{i18n.language === 'fa' ? 'راهنما' : 'Legend'}</button>
         </div>
       </div>
       
@@ -513,10 +532,10 @@ const Topology: React.FC = () => {
                                     const isOrigin = nIdx === 0, isDest = nIdx === path.length - 1;
                                     return (
                                         <li key={nIdx} className="flex gap-3 text-xs">
-                                            {nIdx > 0 && <span className="text-slate-300 font-bold"><CornerDownRight size={12} /></span>}
+                                            {nIdx > 0 && <span className="text-slate-300 font-bold"><CornerDownRight size={12} className={i18n.language === 'fa' ? 'rotate-90' : ''} /></span>}
                                             <div className="flex flex-col">
                                                 <span className={`font-bold ${isOrigin ? 'text-emerald-600' : isDest ? 'text-violet-600' : 'text-slate-700'}`}>{node?.data('label')?.replace('\n', ' – ') || nodeId}</span>
-                                                {(isOrigin || isDest) && <span className="text-[9px] uppercase tracking-tighter text-slate-400 font-black">{isOrigin ? 'Origin Point' : 'Destination'}</span>}
+                                                {(isOrigin || isDest) && <span className="text-[9px] uppercase tracking-tighter text-slate-400 font-black">{isOrigin ? (i18n.language === 'fa' ? 'مبدا' : 'Origin Point') : (i18n.language === 'fa' ? 'مقصد' : 'Destination')}</span>}
                                             </div>
                                         </li>
                                     );
@@ -529,12 +548,12 @@ const Topology: React.FC = () => {
         )}
 
         <div className={`absolute bottom-6 right-6 bg-white/80 backdrop-blur-md border border-slate-200 p-6 rounded-4xl shadow-xl w-64 space-y-4 transition-all z-10 ${isLegendOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
-            <h3 className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest"><Info size={14} className="text-sky-500" /> Infrastructure Node Types</h3>
+            <h3 className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest"><Info size={14} className="text-sky-500" /> {i18n.language === 'fa' ? 'انواع گره‌های زیرساخت' : 'Infrastructure Node Types'}</h3>
             <div className="space-y-3">
-                <div className="flex items-center gap-3"><div className="w-3 h-3 rounded-full bg-red-500 border-2 border-red-800" /><span className="text-xs font-bold text-slate-700">Tier-1 / Backbone</span></div>
-                <div className="flex items-center gap-3"><div className="w-3 h-3 rounded-full bg-blue-500 border-2 border-blue-800" /><span className="text-xs font-bold text-slate-700">Transit / Provider</span></div>
-                <div className="flex items-center gap-3"><div className="w-3 h-3 rounded-full bg-emerald-500 border-2 border-emerald-800" /><span className="text-xs font-bold text-slate-700">Access / Origin</span></div>
-                <div className="flex items-center gap-3"><div className="w-3 h-3 rounded-full bg-amber-500 border-2 border-amber-800" /><span className="text-xs font-bold text-slate-700">Standalone Node</span></div>
+                <div className="flex items-center gap-3"><div className="w-3 h-3 rounded-full bg-red-500 border-2 border-red-800" /><span className="text-xs font-bold text-slate-700">{i18n.language === 'fa' ? 'Tier-1 / شبکه اصلی' : 'Tier-1 / Backbone'}</span></div>
+                <div className="flex items-center gap-3"><div className="w-3 h-3 rounded-full bg-blue-500 border-2 border-blue-800" /><span className="text-xs font-bold text-slate-700">{i18n.language === 'fa' ? 'ترانزیت / سرویس‌دهنده' : 'Transit / Provider'}</span></div>
+                <div className="flex items-center gap-3"><div className="w-3 h-3 rounded-full bg-emerald-500 border-2 border-emerald-800" /><span className="text-xs font-bold text-slate-700">{i18n.language === 'fa' ? 'دسترسی / مبدا' : 'Access / Origin'}</span></div>
+                <div className="flex items-center gap-3"><div className="w-3 h-3 rounded-full bg-amber-500 border-2 border-amber-800" /><span className="text-xs font-bold text-slate-700">{i18n.language === 'fa' ? 'گره مستقل' : 'Standalone Node'}</span></div>
             </div>
         </div>
 
@@ -564,24 +583,24 @@ const Topology: React.FC = () => {
                       {popupData.error ? (
                         <div className="py-8 flex flex-col items-center justify-center gap-3 text-slate-400">
                           <AlertCircle size={40} className="text-slate-200" />
-                          <p className="text-xs font-bold uppercase tracking-widest text-center">Intel unavailable for this Node</p>
+                          <p className="text-xs font-bold uppercase tracking-widest text-center">{i18n.language === 'fa' ? 'اطلاعاتی برای این گره موجود نیست' : 'Intel unavailable for this Node'}</p>
                         </div>
                       ) : (
                         <>
                           <div className="flex justify-between items-center py-2 border-b border-slate-50">
-                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Type</span>
-                              <span className="text-xs font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded">{popupData.network_type}</span>
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{i18n.language === 'fa' ? 'نوع' : 'Type'}</span>
+                              <span className="text-xs font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded">{i18n.language === 'fa' ? (popupData.network_type_fa || popupData.network_type) : popupData.network_type}</span>
                           </div>
                           <div className="flex justify-between items-center py-2 border-b border-slate-50">
-                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</span>
-                              <span className={`text-xs font-bold px-2 py-0.5 rounded ${popupData.network_status?.toLowerCase().includes('active') ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-600'}`}>{popupData.network_status}</span>
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{i18n.language === 'fa' ? 'وضعیت' : 'Status'}</span>
+                              <span className={`text-xs font-bold px-2 py-0.5 rounded ${popupData.network_status?.toLowerCase().includes('active') ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-600'}`}>{i18n.language === 'fa' ? (popupData.network_status_fa || popupData.network_status) : popupData.network_status}</span>
                           </div>
                           <div className="flex justify-between items-center py-2 border-b border-slate-50">
-                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Owner</span>
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{i18n.language === 'fa' ? 'مالک' : 'Owner'}</span>
                               <span className="text-xs font-bold text-slate-700 max-w-[140px] truncate">{popupData.registered_to}</span>
                           </div>
                           <div className="flex justify-between items-center py-2">
-                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Peers (U/D)</span>
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{i18n.language === 'fa' ? 'همسایگان' : 'Peers (U/D)'}</span>
                               <span className="text-xs font-mono font-black text-slate-900">{popupData.upstreams_count} / {popupData.downstreams_count}</span>
                           </div>
                         </>
@@ -589,7 +608,7 @@ const Topology: React.FC = () => {
                   </div>
 
                   <div className="p-6 pt-0">
-                      <Link to={`/asn/${popupData.asn_number}`} className="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-all text-sm">Deep Intelligence <ArrowRight size={18} /></Link>
+                      <Link to={`/asn/${popupData.asn_number}`} className="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-all text-sm">{i18n.language === 'fa' ? 'جزئیات عمیق' : 'Deep Intelligence'} <ArrowRight size={18} className={i18n.language === 'fa' ? 'rotate-180' : ''} /></Link>
                   </div>
               </div>
           </div>
